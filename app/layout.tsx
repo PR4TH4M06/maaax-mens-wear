@@ -18,14 +18,24 @@ const jost = Jost({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#0a0a0a",
+  themeColor: "#0e1726",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {
   title: `${SHOP_CONFIG.name} - Leave a Review`,
   description: `${SHOP_CONFIG.name} (${SHOP_CONFIG.parentGroup}) — ${SHOP_CONFIG.brandLine}`,
+  formatDetection: {
+    telephone: false,
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: SHOP_CONFIG.name,
+  },
   icons: {
     icon: "/maaax-logo.png",
     apple: "/maaax-logo.png",

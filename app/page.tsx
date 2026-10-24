@@ -237,40 +237,37 @@ export default function MaaaxReviewPage() {
 
   const handleCopyAndPost = () => {
     if (!fullReview) return;
-    const onCopied = () => {
-      setCopied(true);
-      setTimeout(() => {
-        window.open(
-          SHOP_CONFIG.googleReviewUrl,
-          "_blank",
-          "noopener,noreferrer"
-        );
-      }, 900);
-    };
 
-    const fallbackCopy = () => {
+    // Always execute synchronous textarea copy first so iOS Safari / Android WebView user-gesture is preserved
+    try {
       const ta = document.createElement("textarea");
       ta.value = fullReview;
-      ta.style.cssText = "position:fixed;opacity:0";
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:-9999px;left:-9999px;opacity:0";
       document.body.appendChild(ta);
       ta.select();
-      try {
-        document.execCommand("copy");
-      } catch {
-        // ignore
-      }
+      ta.setSelectionRange(0, fullReview.length);
+      document.execCommand("copy");
       document.body.removeChild(ta);
-      onCopied();
-    };
+    } catch {
+      // ignore
+    }
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard
-        .writeText(fullReview)
-        .then(onCopied)
-        .catch(fallbackCopy);
-    } else {
-      fallbackCopy();
+      navigator.clipboard.writeText(fullReview).catch(() => {});
     }
+
+    setCopied(true);
+    setTimeout(() => {
+      const win = window.open(
+        SHOP_CONFIG.googleReviewUrl,
+        "_blank",
+        "noopener,noreferrer"
+      );
+      if (!win) {
+        window.location.href = SHOP_CONFIG.googleReviewUrl;
+      }
+    }, 650);
   };
 
   const handleSaveContact = () => {
